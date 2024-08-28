@@ -2,17 +2,19 @@ def belongs_to_language(grammar, word):
     n = len(word)
     variables = list(set(rule[0] for rule in grammar))
     var_to_index = {v: i for i, v in enumerate(variables)}
+    num_vars = len(variables)
 
-    T = [[[False for _ in range(len(variables))] for _ in range(n)] for _ in range(n)]
+    # Create table
+    T = [[[False] * num_vars for _ in range(n)] for _ in range(n)]
 
-    # Initialize base case
+    # Initialize base cases
     for i, char in enumerate(word):
         for rule in grammar:
             if len(rule) == 2 and rule[1] == char:
                 T[i][i][var_to_index[rule[0]]] = True
 
     # Fill the table
-    for length in range(2, n + 1):
+    for length in range(2, n + 1):  # length of the substring
         for start in range(n - length + 1):
             end = start + length - 1
             for rule in grammar:
@@ -27,23 +29,27 @@ def belongs_to_language(grammar, word):
 
     return T[0][n - 1][var_to_index['S']]
 
+if __name__ == "__main__":
 
-# Example grammar
-grammar = [
-    ('S', 'A', 'X'), ('S', 'B', 'Y'), ('S', 'S', 'S'), ('S', 'A', 'B'), ('S', 'B', 'A'),
-    ('X', 'S', 'B'), ('Y', 'S', 'A'), ('A', 'a'), ('B', 'b')
-]
+    # Example grammar
+    grammar = [
+        ('S', 'A', 'X'), ('S', 'B', 'Y'), ('S', 'S', 'S'), ('S', 'A', 'B'), ('S', 'B', 'A'),
+        ('X', 'S', 'B'), ('Y', 'S', 'A'), ('A', 'a'), ('B', 'b')
+    ]
 
-# Test cases
-test_words = [
-    'a' * 15 + 'b' * 15,
-    'ab' * 15,
-    'abba' * 7 + 'ab'
-]
+    # Test cases
+    test_words = [
+        'a' * 15 + 'b' * 15,
+        'ab' * 15,
+        'abba' * 7 + 'ab'
+    ]
 
-for word in test_words:
-    result = belongs_to_language(grammar, word)
-    print(f"Word: {word}")
-    print(f"Length: {len(word)}")
-    print(f"Belongs to language: {result}\n")
+    for word in test_words:
+        result = belongs_to_language(grammar, word)
+        print(f"Word: {word}")
+        print(f"Length: {len(word)}")
+        print(f"Belongs to language: {result}\n")
+
+
+
 
